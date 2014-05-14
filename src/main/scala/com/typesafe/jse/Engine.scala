@@ -101,7 +101,7 @@ object Engine {
                         source: java.io.File,
                         args: immutable.Seq[String],
                         timeout: FiniteDuration,
-                        timeoutExitValue: Int = -1,
+                        timeoutExitValue: Int = Int.MinValue,
                         environment: Map[String, String] = Map.empty
                         )
 
