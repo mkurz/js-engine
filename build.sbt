@@ -9,8 +9,8 @@ scalaVersion := "2.10.4"
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % "2.3.2",
   "com.typesafe.akka" %% "akka-contrib" % "2.3.2",
-  "io.apigee.trireme" % "trireme-core" % "0.7.3",
-  "io.apigee.trireme" % "trireme-node10src" % "0.7.3",
+  "io.apigee.trireme" % "trireme-core" % "0.7.5",
+  "io.apigee.trireme" % "trireme-node10src" % "0.7.5",
   "io.spray" %% "spray-json" % "1.2.6",
   "org.slf4j" % "slf4j-simple" % "1.7.7",
   "org.specs2" %% "specs2" % "2.3.11" % "test",
@@ -18,7 +18,10 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-testkit" % "2.3.2" % "test"
 )
 
-resolvers += Resolver.sonatypeRepo("snapshots")
+resolvers ++= Seq(
+  Resolver.sonatypeRepo("snapshots"),
+  "Typesafe Releases Repository" at "http://repo.typesafe.com/typesafe/releases/"
+)
 
 publishTo := {
     val typesafe = "http://private-repo.typesafe.com/typesafe/"
