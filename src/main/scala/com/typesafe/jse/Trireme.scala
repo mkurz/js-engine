@@ -30,7 +30,7 @@ class Trireme(
   // Trireme code (Trireme's execution is blocking), and actors for the source of stdio (which is also blocking).
   // This actor is then a conduit of the IO as a result of execution.
 
-  val StdioTimeout = 30.seconds
+  val StdioTimeout = Engine.infiniteSchedulerTimeout(context.system.settings.config)
 
   def receive = {
     case ExecuteJs(source, args, timeout, timeoutExitValue, environment) =>
