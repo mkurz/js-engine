@@ -1,8 +1,10 @@
 package com.typesafe.jse
 
+import java.util.concurrent.TimeUnit
+
 import akka.actor.{Terminated, ActorRef, Actor}
+import com.typesafe.config.Config
 import scala.concurrent.duration._
-import scala.concurrent.duration.FiniteDuration
 import akka.util.ByteString
 import scala.collection.immutable
 import com.typesafe.jse.Engine.JsExecutionResult
@@ -115,5 +117,21 @@ object Engine {
   // Internal types
 
   private[jse] case object FinishProcessing
+
+  /**
+   * Get an "infinite" timeout for Akka's default scheduler.
+   *
+   * Of course, there's no such thing as an infinite timeout, so this value is the maximum timeout that the scheduler
+   * will accept, which is equal to the maximum value of an integer multiplied by the tick duration.
+   *
+   * @param config The configuration to read the tick duration from.
+   */
+  def infiniteSchedulerTimeout(config: Config): FiniteDuration = {
+    val tickNanos = config.getDuration("akka.scheduler.tick-duration", TimeUnit.NANOSECONDS)
+
+    // we subtract tickNanos here because of this bug:
+    // https://github.com/akka/akka/issues/15598
+    (tickNanos * Int.MaxValue - tickNanos).nanos
+  }
 
 }

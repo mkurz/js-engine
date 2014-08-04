@@ -22,7 +22,7 @@ class JavaxEngine(
     engineName: String
   ) extends Engine(stdArgs, Map.empty) {
 
-  val StdioTimeout = 30.seconds
+  val StdioTimeout = Engine.infiniteSchedulerTimeout(context.system.settings.config)
 
   def receive = {
     case ExecuteJs(source, args, timeout, timeoutExitValue, environment) =>
