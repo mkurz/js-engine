@@ -6,6 +6,8 @@ version := "1.0.2-SNAPSHOT"
 
 scalaVersion := "2.10.4"
 
+crossScalaVersions := Seq("2.10.4", "2.11.2")
+
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % "2.3.2",
   "com.typesafe.akka" %% "akka-contrib" % "2.3.2",
