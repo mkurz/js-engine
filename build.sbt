@@ -2,11 +2,11 @@ organization := "com.typesafe"
 
 name := "jse"
 
-version := "1.0.2-SNAPSHOT"
+version := "1.0.2"
 
 scalaVersion := "2.10.4"
 
-crossScalaVersions := Seq("2.10.4", "2.11.2")
+crossScalaVersions := Seq(scalaVersion.value, "2.11.2")
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % "2.3.2",
