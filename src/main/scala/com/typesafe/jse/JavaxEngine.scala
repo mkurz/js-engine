@@ -88,7 +88,7 @@ private[jse] class JavaxEngineShell(
 
   val engine = new ScriptEngineManager().getEngineByName(engineName)
 
-  if (engine == null) throw new Exception("Javascript engine not found")
+  if (engine == null) throw new Exception(s"Javascript engine '$engineName' not found")
 
   def receive = {
 
