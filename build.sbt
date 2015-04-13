@@ -48,6 +48,7 @@ pomExtra := {
 pomIncludeRepository := { _ => false }
 
 // Release settings
+releaseSettings
 ReleaseKeys.crossBuild := true
 ReleaseKeys.publishArtifactsAction := PgpKeys.publishSigned.value
 ReleaseKeys.tagName := (version in ThisBuild).value
