@@ -1,38 +1,22 @@
 organization := "com.typesafe"
-
 name := "jse"
 
-version := "1.0.3-SNAPSHOT"
-
 scalaVersion := "2.10.4"
-
-crossScalaVersions := Seq(scalaVersion.value, "2.11.2")
+crossScalaVersions := Seq(scalaVersion.value, "2.11.5")
 
 libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-actor" % "2.3.2",
-  "com.typesafe.akka" %% "akka-contrib" % "2.3.2",
-  "io.apigee.trireme" % "trireme-core" % "0.8.0",
-  "io.apigee.trireme" % "trireme-node10src" % "0.8.0",
-  "io.spray" %% "spray-json" % "1.2.6",
-  "org.slf4j" % "slf4j-simple" % "1.7.7",
-  "org.specs2" %% "specs2" % "2.3.11" % "test",
+  "com.typesafe.akka" %% "akka-actor" % "2.3.9",
+  "com.typesafe.akka" %% "akka-contrib" % "2.3.9",
+  "io.apigee.trireme" % "trireme-core" % "0.8.5",
+  "io.apigee.trireme" % "trireme-node10src" % "0.8.5",
+  "io.spray" %% "spray-json" % "1.3.1",
+  "org.slf4j" % "slf4j-simple" % "1.7.12",
+  "org.specs2" %% "specs2-core" % "3.4" % "test",
   "junit" % "junit" % "4.11" % "test",
-  "com.typesafe.akka" %% "akka-testkit" % "2.3.2" % "test"
+  "com.typesafe.akka" %% "akka-testkit" % "2.3.9" % "test"
 )
-
-resolvers ++= Seq(
-  Resolver.sonatypeRepo("snapshots"),
-  "Typesafe Releases Repository" at "http://repo.typesafe.com/typesafe/releases/"
-)
-
-publishTo := {
-    val typesafe = "http://private-repo.typesafe.com/typesafe/"
-    val (name, url) = if (isSnapshot.value)
-                        ("sbt-plugin-snapshots", typesafe + "maven-snapshots")
-                      else
-                        ("sbt-plugin-releases", typesafe + "maven-releases")
-    Some(Resolver.url(name, new URL(url)))
-}
+// Required by specs2 to get scalaz-stream
+resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 
 lazy val root = project in file(".")
 
@@ -40,3 +24,31 @@ lazy val `js-engine-tester` = project.dependsOn(root)
 
 // Somehow required to get a js engine in tests (https://github.com/sbt/sbt/issues/1214)
 fork in Test := true
+
+// Publish settings
+publishTo := {
+  if (isSnapshot.value) Some(Opts.resolver.sonatypeSnapshots)
+  else Some(Opts.resolver.sonatypeStaging)
+}
+homepage := Some(url("https://github.com/typesafehub/js-engine"))
+licenses := Seq("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.html"))
+pomExtra := {
+  <scm>
+    <url>git@github.com:typesafehub/js-engine.git</url>
+    <connection>scm:git:git@github.com:typesafehub/js-engine.git</connection>
+  </scm>
+  <developers>
+    <developer>
+      <id>playframework</id>
+      <name>Play Framework Team</name>
+      <url>https://github.com/playframework</url>
+    </developer>
+  </developers>
+}
+pomIncludeRepository := { _ => false }
+
+// Release settings
+ReleaseKeys.crossBuild := true
+ReleaseKeys.publishArtifactsAction := PgpKeys.publishSigned.value
+ReleaseKeys.tagName := (version in ThisBuild).value
+

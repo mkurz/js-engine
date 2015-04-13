@@ -1,7 +1,5 @@
 package com.typesafe.jse
 
-import org.junit.runner.RunWith
-import org.specs2.runner.JUnitRunner
 import org.specs2.mutable.Specification
 import com.typesafe.jse.Engine.JsExecutionResult
 import java.io.File
@@ -12,7 +10,6 @@ import akka.actor.{ActorRef, ActorSystem}
 import scala.concurrent.Await
 import java.util.concurrent.TimeUnit
 
-@RunWith(classOf[JUnitRunner])
 class RhinoSpec extends Specification {
 
   //sequential
