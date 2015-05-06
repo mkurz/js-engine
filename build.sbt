@@ -9,7 +9,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-contrib" % "2.3.9",
   "io.apigee.trireme" % "trireme-core" % "0.8.5",
   "io.apigee.trireme" % "trireme-node10src" % "0.8.5",
-  "io.spray" %% "spray-json" % "1.3.1",
+  "io.spray" %% "spray-json" % "1.3.2",
   "org.slf4j" % "slf4j-simple" % "1.7.12",
   "org.specs2" %% "specs2-core" % "3.4" % "test",
   "junit" % "junit" % "4.11" % "test",
