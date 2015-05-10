@@ -86,7 +86,7 @@ private[jse] class JavaxEngineShell(
 
   import JavaxEngineShell._
 
-  val engine = new ScriptEngineManager().getEngineByName(engineName)
+  val engine = new ScriptEngineManager(null).getEngineByName(engineName)
 
   if (engine == null) throw new Exception(s"Javascript engine '$engineName' not found")
 
