@@ -1,5 +1,7 @@
 package com.typesafe.jse
 
+import java.util.concurrent.{TimeUnit, AbstractExecutorService}
+
 import akka.actor._
 import scala.concurrent.blocking
 import java.io._
@@ -55,6 +57,7 @@ class Trireme(
           source.getCanonicalFile,
           stdArgs ++ args,
           stdEnvironment ++ environment,
+          ioDispatcherId,
           stdinIs, stdoutOs, stderrOs
         ), "trireme-shell") ! TriremeShell.Execute
 
@@ -89,6 +92,7 @@ private[jse] class TriremeShell(
                                  source: File,
                                  args: immutable.Seq[String],
                                  environment: Map[String, String],
+                                 ioDispatcherId: String,
                                  stdinIs: InputStream,
                                  stdoutOs: OutputStream,
                                  stderrOs: OutputStream
@@ -96,9 +100,23 @@ private[jse] class TriremeShell(
 
   import TriremeShell._
 
+  val AwaitTerminationTimeout = 1.second
+
+  val blockingDispatcher = context.system.dispatchers.lookup(ioDispatcherId)
+  val executorService = new AbstractExecutorService {
+    def shutdown() = throw new UnsupportedOperationException
+    def isTerminated = false
+    def awaitTermination(l: Long, timeUnit: TimeUnit) = throw new UnsupportedOperationException
+    def shutdownNow() = throw new UnsupportedOperationException
+    def isShutdown = false
+    def execute(runnable: Runnable) = blockingDispatcher.execute(runnable)
+  }
+
   val env = (sys.env ++ environment).asJava
-  val nodeEnv = new NodeEnvironment()
   val sandbox = new Sandbox()
+  sandbox.setAsyncThreadPool(executorService)
+  val nodeEnv = new NodeEnvironment()
+  nodeEnv.setSandbox(sandbox)
   sandbox.setStdin(new NoCloseInputStream(stdinIs))
   sandbox.setStdout(new NoCloseOutputStream(stdoutOs))
   sandbox.setStderr(new NoCloseOutputStream(stderrOs))
@@ -111,7 +129,6 @@ private[jse] class TriremeShell(
       }
 
       val script = nodeEnv.createScript(source.getName, source, args.toArray)
-      script.setSandbox(sandbox)
       script.setEnvironment(env)
 
       val senderSel = sender().path
@@ -137,6 +154,8 @@ private[jse] class TriremeShell(
                 }
             }
           }
+          // The script holds an NIO selector that needs to be closed, otherwise it leaks.
+          script.close()
           stdoutOs.close()
           stderrOs.close()
           senderSys.actorSelection(senderSel) ! status.getExitCode
@@ -144,6 +163,12 @@ private[jse] class TriremeShell(
       })
   }
 
+  override def postStop() = {
+    // The script pool is a cached thread pool so it should shut itself down, but it's better to clean up immediately,
+    // and this means that our tests work.
+    nodeEnv.getScriptPool.shutdown()
+    nodeEnv.getScriptPool.awaitTermination(AwaitTerminationTimeout.toMillis, TimeUnit.MILLISECONDS)
+  }
 }
 
 private[jse] object TriremeShell {
@@ -151,11 +176,12 @@ private[jse] object TriremeShell {
              moduleBase: File,
              args: immutable.Seq[String],
              environment: Map[String, String],
+             ioDispatcherId: String = "blocking-process-io-dispatcher",
              stdinIs: InputStream,
              stdoutOs: OutputStream,
              stderrOs: OutputStream
              ): Props = {
-    Props(classOf[TriremeShell], moduleBase, args, environment, stdinIs, stdoutOs, stderrOs)
+    Props(classOf[TriremeShell], moduleBase, args, environment, ioDispatcherId, stdinIs, stdoutOs, stderrOs)
   }
 
   case object Execute
