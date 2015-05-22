@@ -54,6 +54,8 @@ pomExtra := {
 pomIncludeRepository := { _ => false }
 
 // Release settings
+releaseSettings
+
 ReleaseKeys.crossBuild := true
 
 ReleaseKeys.publishArtifactsAction := PgpKeys.publishSigned.value
