@@ -24,6 +24,7 @@ lazy val `js-engine-tester` = project.dependsOn(root)
 
 // Somehow required to get a js engine in tests (https://github.com/sbt/sbt/issues/1214)
 fork in Test := true
+parallelExecution in Test := false
 
 // Publish settings
 publishTo := {
