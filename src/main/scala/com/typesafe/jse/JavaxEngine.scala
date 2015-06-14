@@ -101,10 +101,14 @@ private[jse] class JavaxEngineShell(
       val errorWriter = new PrintWriter(stderrOs, true)
 
       val context = {
-        val c = new SimpleScriptContext()
+        val c: ScriptContext = new SimpleScriptContext()
         c.setReader(reader)
         c.setWriter(writer)
         c.setErrorWriter(errorWriter)
+        // If you create a new ScriptContext object and use it to evaluate scripts, then
+        // ENGINE_SCOPE of that context has to be associated with a nashorn Global object somehow.
+        // See https://wiki.openjdk.java.net/display/Nashorn/Nashorn+jsr223+engine+notes
+        c.setBindings(engine.getContext().getBindings(ScriptContext.ENGINE_SCOPE), ScriptContext.ENGINE_SCOPE)
         c.setAttribute("arguments", args.toArray, ScriptContext.ENGINE_SCOPE)
         c.setAttribute(ScriptEngine.FILENAME, script.getName, ScriptContext.ENGINE_SCOPE)
         c
