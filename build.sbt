@@ -27,10 +27,6 @@ fork in Test := true
 parallelExecution in Test := false
 
 // Publish settings
-publishTo := {
-  if (isSnapshot.value) Some(Opts.resolver.sonatypeSnapshots)
-  else Some(Opts.resolver.sonatypeStaging)
-}
 homepage := Some(url("https://github.com/typesafehub/js-engine"))
 licenses := Seq("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.html"))
 pomExtra := {
@@ -49,8 +45,25 @@ pomExtra := {
 pomIncludeRepository := { _ => false }
 
 // Release settings
-releaseSettings
-ReleaseKeys.crossBuild := true
-ReleaseKeys.publishArtifactsAction := PgpKeys.publishSigned.value
-ReleaseKeys.tagName := (version in ThisBuild).value
+sonatypeProfileName := "com.typesafe"
+releaseCrossBuild := true
+releasePublishArtifactsAction := PgpKeys.publishSigned.value
+releaseTagName := (version in ThisBuild).value
+releaseProcess := {
+  import ReleaseTransformations._
+
+  Seq[ReleaseStep](
+    checkSnapshotDependencies,
+    inquireVersions,
+    runTest,
+    setReleaseVersion,
+    commitReleaseVersion,
+    tagRelease,
+    publishArtifacts,
+    releaseStepCommand("sonatypeRelease"),
+    setNextVersion,
+    commitNextVersion,
+    pushChanges
+  )
+}
 
