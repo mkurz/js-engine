@@ -70,11 +70,13 @@ class TriremeSpec extends Specification {
       // count will be non 0
       runSimpleTest(system)
 
-      import scala.collection.JavaConverters._
-      val triremeThreadCount = Thread.getAllStackTraces.keySet.asScala
-        .count(_.getName.contains("Trireme"))
+      Thread.sleep(1)
 
-      triremeThreadCount must_== 0
+      import scala.collection.JavaConverters._
+      val triremeThreads = Thread.getAllStackTraces.keySet.asScala
+        .filter(_.getName.contains("Trireme"))
+
+      ("trireme threads: " + triremeThreads) <==> (triremeThreads.size === 0)
       ok
     }
 
