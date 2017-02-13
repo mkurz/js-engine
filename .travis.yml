@@ -1,6 +1,4 @@
 jdk:
-  oraclejdk8
-  openjdk7
-  openjdk6
+  - oraclejdk8
 language: scala
 script: sbt +test
