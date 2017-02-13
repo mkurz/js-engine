@@ -12,7 +12,7 @@ import io.apigee.trireme.core._
 import scala.collection.JavaConverters._
 import org.mozilla.javascript.RhinoException
 import scala.util.Try
-import io.apigee.trireme.core.internal.{NoCloseOutputStream, NoCloseInputStream}
+import io.apigee.trireme.kernel.streams.{NoCloseOutputStream, NoCloseInputStream}
 import scala.concurrent.duration._
 import com.typesafe.jse.Engine.ExecuteJs
 import akka.pattern.AskTimeoutException
