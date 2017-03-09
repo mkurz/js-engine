@@ -10,7 +10,7 @@ import scala.concurrent.blocking
 import scala.concurrent.duration._
 import scala.util.Try
 
-import com.typesafe.jse.Engine.ExecuteJs
+import com.typesafe.jse.Engine.{ExecuteJs,IsNode}
 
 /**
  * Declares an in-JVM JavaScript engine. The actor is expected to be associated with a blocking dispatcher as the
@@ -54,6 +54,8 @@ class JavaxEngine(
         // We don't need stdin
         blocking(Try(stdinIs.close()))
       }
+    case IsNode =>
+      sender ! false
   }
 }
 

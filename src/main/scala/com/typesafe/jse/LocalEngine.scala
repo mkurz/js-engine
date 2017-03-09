@@ -1,12 +1,12 @@
 package com.typesafe.jse
 
 import akka.actor._
-import com.typesafe.jse.Engine.ExecuteJs
 import akka.contrib.process.BlockingProcess
 import akka.contrib.process.BlockingProcess.Started
-import scala.collection.immutable
 import akka.contrib.process.StreamEvents.Ack
+import com.typesafe.jse.Engine.{ExecuteJs,IsNode}
 import java.io.File
+import scala.collection.immutable
 
 /**
  * Provides an Actor on behalf of a JavaScript Engine. Engines are represented as operating system processes and are
@@ -14,7 +14,7 @@ import java.io.File
  * @param stdArgs a sequence of standard command line arguments used to launch the engine from the command line.
  * @param stdEnvironment a sequence of standard module paths.
  */
-class LocalEngine(stdArgs: immutable.Seq[String], stdEnvironment: Map[String, String]) extends Engine(stdArgs, stdEnvironment) {
+class LocalEngine(stdArgs: immutable.Seq[String], stdEnvironment: Map[String, String], isNode: Boolean) extends Engine(stdArgs, stdEnvironment) {
 
   def receive = {
     case ExecuteJs(f, args, timeout, timeoutExitValue, environment) =>
@@ -30,6 +30,8 @@ class LocalEngine(stdArgs: immutable.Seq[String], stdEnvironment: Map[String, St
           context.become(engineIOHandler(i, o, e, requester, Ack, timeout, timeoutExitValue))
           i ! PoisonPill // We don't need an input stream so close it out straight away.
       }
+    case IsNode =>
+      sender() ! isNode
   }
 }
 
@@ -52,7 +54,7 @@ object CommonNode {
 
   def props(command: Option[File] = None, stdArgs: immutable.Seq[String] = Nil, stdEnvironment: Map[String, String] = Map.empty): Props = {
     val args = Seq(path(command, "common-node")) ++ stdArgs
-    Props(classOf[LocalEngine], args, stdEnvironment)
+    Props(classOf[LocalEngine], args, stdEnvironment, true)
   }
 }
 
@@ -65,7 +67,7 @@ object Node {
 
   def props(command: Option[File] = None, stdArgs: immutable.Seq[String] = Nil, stdEnvironment: Map[String, String] = Map.empty): Props = {
     val args = Seq(path(command, "node")) ++ stdArgs
-    Props(classOf[LocalEngine], args, stdEnvironment)
+    Props(classOf[LocalEngine], args, stdEnvironment, true)
   }
 }
 
@@ -78,6 +80,6 @@ object PhantomJs {
 
   def props(command: Option[File] = None, stdArgs: immutable.Seq[String] = Nil, stdEnvironment: Map[String, String] = Map.empty): Props = {
     val args = Seq(path(command, "phantomjs")) ++ stdArgs
-    Props(classOf[LocalEngine], args, stdEnvironment)
+    Props(classOf[LocalEngine], args, stdEnvironment, false)
   }
 }

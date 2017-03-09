@@ -15,7 +15,7 @@ import org.mozilla.javascript.commonjs.module.RequireBuilder
 import org.mozilla.javascript.commonjs.module.provider.{UrlModuleSourceProvider, SoftCachingModuleScriptProvider}
 import org.mozilla.javascript.tools.shell.Global
 
-import com.typesafe.jse.Engine.ExecuteJs
+import com.typesafe.jse.Engine.{ExecuteJs,IsNode}
 
 /**
  * Declares an in-JVM Rhino based JavaScript engine. The actor is expected to be
@@ -64,6 +64,8 @@ class Rhino(
         // We don't need stdin
         blocking(Try(stdinIs.close()))
       }
+    case IsNode =>
+      sender() ! false
   }
 }
 

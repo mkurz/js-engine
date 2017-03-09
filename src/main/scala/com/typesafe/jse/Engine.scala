@@ -114,6 +114,8 @@ object Engine {
    */
   case class JsExecutionResult(exitValue: Int, output: ByteString, error: ByteString)
 
+  case object IsNode
+
   // Internal types
 
   private[jse] case object FinishProcessing
