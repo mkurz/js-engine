@@ -1,7 +1,7 @@
 *.class
 *.log
 
-# sbt specific
+# sbt
 dist/*
 target/
 lib_managed/
@@ -12,10 +12,13 @@ project/plugins/project/
 # sbt-web
 node_modules/
 
-# Scala-IDE specific
+# Eclipse / Scala-IDE
+bin/
 .scala_dependencies
+.classpath
+.project
+.settings/
 
 # Idea
 .idea/
 .idea_modules/
-
