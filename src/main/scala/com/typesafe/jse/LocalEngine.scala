@@ -41,13 +41,6 @@ object LocalEngine {
 
   def path(path: Option[File], command: String): String = path.fold(command)(_.getCanonicalPath)
 
-  val nodePathDelim = if (System.getProperty("os.name").toLowerCase.contains("win")) ";" else ":"
-
-  def nodePathEnv(modulePaths: immutable.Seq[String]): Map[String, String] = {
-    val nodePath = modulePaths.mkString(nodePathDelim)
-    val newNodePath = Option(System.getenv("NODE_PATH")).fold(nodePath)(_ + nodePathDelim + nodePath)
-    if (newNodePath.isEmpty) Map.empty[String, String] else Map("NODE_PATH" -> newNodePath)
-  }
 }
 
 /**
