@@ -1,21 +1,22 @@
 package com.typesafe.jse
 
+import java.io._
 import java.util.concurrent.{TimeUnit, AbstractExecutorService}
 
-import akka.actor._
 import scala.concurrent.blocking
-import java.io._
+import scala.collection.immutable
+import scala.collection.JavaConverters._
+import scala.util.Try
+import scala.concurrent.duration._
+
+import akka.actor._
 import akka.contrib.process.StreamEvents.Ack
 import akka.contrib.process._
-import scala.collection.immutable
-import io.apigee.trireme.core._
-import scala.collection.JavaConverters._
-import org.mozilla.javascript.RhinoException
-import scala.util.Try
-import io.apigee.trireme.kernel.streams.{NoCloseOutputStream, NoCloseInputStream}
-import scala.concurrent.duration._
-import com.typesafe.jse.Engine.ExecuteJs
 import akka.pattern.AskTimeoutException
+import com.typesafe.jse.Engine.{ExecuteJs,IsNode}
+import io.apigee.trireme.core._
+import io.apigee.trireme.kernel.streams.{NoCloseOutputStream, NoCloseInputStream}
+import org.mozilla.javascript.RhinoException
 
 /**
  * Declares an in-JVM Rhino based JavaScript engine supporting the Node API.
@@ -65,6 +66,8 @@ class Trireme(
         // We don't need stdin
         blocking(Try(stdinIs.close()))
       }
+    case IsNode =>
+      sender() ! false
   }
 }
 

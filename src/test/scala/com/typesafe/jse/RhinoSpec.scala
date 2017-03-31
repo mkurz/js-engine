@@ -53,7 +53,18 @@ class RhinoSpec extends Specification {
           new String(result.output.toArray, "UTF-8").trim mustEqual ""
           new String(result.error.toArray, "UTF-8").trim must contain("""Error: Module "console" not found""")
       }
+    }
 
+    "not be reported as node" in {
+      withEngine {
+        engine =>
+          implicit val timeout = Timeout(1000L, TimeUnit.MILLISECONDS)
+
+          val futureResult = (engine ? Engine.IsNode).mapTo[Boolean]
+          val result = Await.result(futureResult, timeout.duration)
+
+          result mustEqual false
+      }
     }
   }
 
