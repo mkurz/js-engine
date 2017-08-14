@@ -17,8 +17,7 @@ class JavaxEngineSpec extends Specification {
     val system = ActorSystem()
     val engine = system.actorOf(JavaxEngine.props(engineName = "js"))
     try block(engine) finally {
-      system.shutdown()
-      system.awaitTermination()
+      AkkaCompat.terminate(system)
     }
   }
 

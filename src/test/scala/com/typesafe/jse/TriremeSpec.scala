@@ -18,8 +18,7 @@ class TriremeSpec extends Specification {
   def withActorSystem[T](block: ActorSystem => T): T = {
     val system = ActorSystem()
     try block(system) finally {
-      system.shutdown()
-      system.awaitTermination()
+      AkkaCompat.terminate(system)
     }
   }
 

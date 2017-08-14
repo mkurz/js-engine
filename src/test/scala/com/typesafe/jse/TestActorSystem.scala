@@ -13,5 +13,5 @@ abstract class TestActorSystem
   with After
   with ImplicitSender {
 
-  def after = system.shutdown()
+  def after = AkkaCompat.terminate(system)
 }
