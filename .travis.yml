@@ -2,3 +2,13 @@ jdk:
   - oraclejdk8
 language: scala
 script: sbt +test
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    
+before_cache:
+  # Delete all ivydata files
+  - find $HOME/.ivy2/cache -name "ivydata-*.properties" | xargs rm
+

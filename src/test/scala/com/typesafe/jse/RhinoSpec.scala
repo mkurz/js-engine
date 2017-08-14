@@ -20,8 +20,7 @@ class RhinoSpec extends Specification {
     try {
       block(engine)
     } finally {
-      system.shutdown()
-      system.awaitTermination()
+      AkkaCompat.terminate(system)
     }
   }
 
