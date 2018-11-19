@@ -12,7 +12,6 @@ libraryDependencies ++= {
   }
   Seq(
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
-    "com.typesafe.akka" %% "akka-contrib" % akkaVersion,
     "io.apigee.trireme" % "trireme-core" % "0.8.9",
     "io.apigee.trireme" % "trireme-node10src" % "0.8.9",
     "io.spray" %% "spray-json" % "1.3.3",
