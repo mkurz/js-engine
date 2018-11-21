@@ -1,8 +1,12 @@
+sudo: false
+language: scala
+
 jdk:
   - oraclejdk8
-language: scala
-script: sbt +test
-sudo: false
+
+script:
+  - sbt +test
+  - sbt +publishLocal
 
 cache:
   directories:
