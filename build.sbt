@@ -1,25 +1,25 @@
 organization := "com.typesafe"
 name := "jse"
 
-scalaVersion := "2.10.6"
-crossScalaVersions := Seq(scalaVersion.value, "2.11.11", "2.12.3")
+scalaVersion := "2.10.7"
+crossScalaVersions := Seq(scalaVersion.value, "2.11.12", "2.12.7")
 
 libraryDependencies ++= {
   val akkaVersion = scalaBinaryVersion.value match {
     case "2.10" => "2.3.16"
     case "2.11" => "2.3.16"
-    case "2.12" => "2.5.4"
+    case "2.12" => "2.5.18"
   }
   Seq(
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
-    "io.apigee.trireme" % "trireme-core" % "0.8.9",
-    "io.apigee.trireme" % "trireme-node10src" % "0.8.9",
-    "io.spray" %% "spray-json" % "1.3.3",
-    "org.slf4j" % "slf4j-api" % "1.7.22",
+    "io.apigee.trireme" % "trireme-core" % "0.9.4",
+    "io.apigee.trireme" % "trireme-node10src" % "0.9.4",
+    "io.spray" %% "spray-json" % "1.3.5",
+    "org.slf4j" % "slf4j-api" % "1.7.25",
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
     "junit" % "junit" % "4.12" % "test",
-    "org.slf4j" % "slf4j-simple" % "1.7.22" % "test",
-    "org.specs2" %% "specs2-core" % "3.8.6" % "test"
+    "org.slf4j" % "slf4j-simple" % "1.7.25" % "test",
+    "org.specs2" %% "specs2-core" % "3.10.0" % "test"
   )
 }
 
