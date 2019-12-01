@@ -1,18 +1,23 @@
-sudo: false
 language: scala
 
-jdk:
-  - oraclejdk8
+env:
+  - TRAVIS_JDK=8
+  - TRAVIS_JDK=11
+
+before_install: curl -Ls https://git.io/jabba | bash && . ~/.jabba/jabba.sh
+install: jabba install "adopt@~1.$TRAVIS_JDK.0-0" && jabba use "$_" && java -Xmx32m -version
 
 script:
-  - sbt +test
-  - sbt +publishLocal
+  - sbt +test +publishLocal
+
+sudo: false
 
 cache:
   directories:
-    - $HOME/.ivy2/cache
-    
+    - "$HOME/.coursier/cache"
+    - "$HOME/.ivy2/cache"
+    - "$HOME/.jabba/jdk"
+
 before_cache:
   # Delete all ivydata files
   - find $HOME/.ivy2/cache -name "ivydata-*.properties" | xargs rm
-
